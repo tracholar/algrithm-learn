@@ -1,31 +1,22 @@
 # coding:utf8
+class Heap:
+	"""
+	this is heap
+	"""
+	data = None
+	type = None
+	def __init__(self,x=None):
+		self.data = x
 
-def Parent(i):
-	return i/2
+	def __repr__(self):
+		return '%s' %  self.data
+		
+class MaxHeap(Heap):
 	
-def Left(i):
-	return 2*i
+	def __init__(self,x=None):
+		self.type = 'max'
+		Heap.__init__(self,x)
 	
-def Right(i):
-	return 2*i+1
-	
-def MaxHeapify(A,i):
-	l = Left(i)
-	r = Right(i)
-	if l<len(A) and A[l]>A[i]:
-		largest = l 
-	else:
-		largest = i 
-	if r<len(A) and A[r]>A[largest]:
-		largest = r 
-	if largest != i:
-		tmp = A[i]
-		A[i] = A[largest]
-		A[largest] = tmp
-		MaxHeapify(A,largest)
-
-	
-x = [0,1,2,3,4,5,6]
-for i in range(len(x)-1,0,-1):
-	MaxHeapify(x,i)
-print x
+if __name__=='__main__':
+	h = MaxHeap(range(10))
+	print h.type,h
