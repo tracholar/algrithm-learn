@@ -1,4 +1,5 @@
 # coding:utf8
+import math
 
 def Parent(i):
 	return i/2
@@ -24,8 +25,17 @@ def MaxHeapify(A,i):
 		A[largest] = tmp
 		MaxHeapify(A,largest)
 
+def PrintHeap(A,i=1):
+	if i>= len(A):
+		return
+	for t in range(int(math.log(i,2))):
+		print '  ',
+	print A[i]
+	PrintHeap(A,Right(i))
+	PrintHeap(A,Left(i))
 	
-x = [0,1,2,3,4,5,6]
+x = [0,27, 17, 3, 16, 13, 10, 1, 5, 7, 12, 4, 8, 9, 0]
+PrintHeap(x)
 for i in range(len(x)-1,0,-1):
 	MaxHeapify(x,i)
-print x
+PrintHeap(x)
