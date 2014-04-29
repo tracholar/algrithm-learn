@@ -43,21 +43,29 @@ def Heapsort(A):
 		heapsize -= 1
 		MaxHeapify(A,1,heapsize)
 
-x = np.random.rand(11)
-x[0] = 0
+n = 1000000
+x = np.random.rand(n)
+#print x
+t1 = time.time()
 Heapsort(x)
-print x
-i=1
-ia = []
-t = []
-while i<=2**15:
-	x = np.random.rand(i)
-	t1 = time.time()
-	Heapsort(x)
-	t2 = time.time()
-	ia.append(i)
-	t.append(t2-t1)
-	i *= 2
-print t
-plt.plot(ia,t)
-plt.show()
+t2 = time.time()
+print 'n = ',n,'cost time: ', t2-t1
+
+# x = np.random.rand(11)
+# x[0] = 0
+# Heapsort(x)
+# print x
+# i=1
+# ia = []
+# t = []
+# while i<=2**15:
+	# x = np.random.rand(i)
+	# t1 = time.time()
+	# Heapsort(x)
+	# t2 = time.time()
+	# ia.append(i)
+	# t.append(t2-t1)
+	# i *= 2
+# print t
+# plt.plot(ia,t)
+# plt.show()
