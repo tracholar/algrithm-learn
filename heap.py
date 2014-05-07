@@ -1,12 +1,5 @@
 # coding:utf8
-import math
 
-def Parent(i):
-	return i/2
-	
-def Left(i):
-	return 2*i
-	
 def Right(i):
 	return 2*i+1
 	
