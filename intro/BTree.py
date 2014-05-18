@@ -31,5 +31,25 @@ class BTree:
 			DiskRead(x.children[i])
 			return self.search(x.children[i],k)
 	
+	def SplitChild(self,x,i,y):
+		t = self.t
+		z = BTNode()
+		z.isleaf = y.isleaf
+		z.n = self.t - 1
+		
+		z.key = y.key[t:2*t-1]
+		
+		if not y.isleaf:
+			z.children = y.children[self.t:2*self.t]
+			
+		y.children = y.children[0:self.t-1]
+		y.n = self.t - 1
+		x.children.insert(i,z)
+		x.key.insert(i,y.key[t-1])
+		x.n += 1
+		y.key = y.key[:t-1]
+		DiskWrite(y)
+		DiskWrite(z)
+		DiskWrite(x)
 
 	
