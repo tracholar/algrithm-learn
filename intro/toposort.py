@@ -16,6 +16,7 @@ def Hasin(G,v):
 	return False
 	
 def TopoSort(g):
+	G = np.zeros(g.shape)
 	G[:,:] = g[:,:]
 	L = []
 	S = []
