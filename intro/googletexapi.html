@@ -1,0 +1,15 @@
+<meta charset="utf-8">
+<script type="text/javascript">
+	function render(){
+		var tex = document.getElementById('tex').value;
+		var img = document.createElement('img');
+		var url = 'http://chart.apis.google.com/chart?cht=tx&chl='+encodeURIComponent(tex);
+		document.getElementById('url').innerText = url;
+		img.src = url;
+		document.getElementById('png').innerHTML = '';
+		document.getElementById('png').appendChild(img);
+	}
+</script>
+<textarea id="tex" onkeyup="render()" style="width:100%;margin:20px 0px;"></textarea>
+<p id="url"></p>
+<div id="png"></div>
