@@ -52,7 +52,7 @@ Ford-Fulkerson算法通过搜寻一条增广路径（用BFS或者DFS，时间复
 或者减少反向流量（如果正向边不再E中，即该路径出现是因为在原网络中出现反向流量，
 才使得残留网络中出现一条正向边）。
 
-`
+```
 for each edge(u,v) ∈ G.E
 	(u,v).f = 0
 while there exists a path p from s to t in the residual network Gf
@@ -62,7 +62,7 @@ while there exists a path p from s to t in the residual network Gf
 			(u,v).f += cf(p)
 		else
 			(v,u).f -= cf(p)
-`
+```
 
 这个算法的问题是每次增减的容量cf(p)很小但最大流很大时，有可能会非常慢。
 这取决于第一条找到的路径的容量是否总是很小，时间复杂度为O(E|f|)。
