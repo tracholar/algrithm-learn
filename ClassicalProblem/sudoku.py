@@ -56,6 +56,14 @@ def FindFirstNone(sudo):
 			if sudo[i][j] == 'x':
 				return i,j 
 	return -1,-1
+	
+def FindAllNone(sudo):
+	L = []
+	for i in range(len(sudo)):
+		for j in range(len(sudo)):
+			if sudo[i][j] == 'x':
+				L.append((i,j))
+	return L
 
 def IsRightSudo(sudo):
 	n = len(sudo)
@@ -91,8 +99,6 @@ def FindCadidateNumber(sudo, i, j):
 		if IsRightSudo(sudo):
 			L.append(k)
 		sudo[i][j] = 'x'
-	
-	
 	return L
 
 	
@@ -111,25 +117,54 @@ def SolveSudoku(sudo):
 	
 	return False
 	
-genT = []
-solveT = []
-for n in range(20):
-	t1 = time.time()
-	sudo = GetRandomSudoku(0.4)
-	t2 = time.time()
-	genT.append(t2-t1)
-	PrintSudoku(sudo)
-	i,j = FindFirstNone(sudo)
-	print i,j 
-	print FindCadidateNumber(sudo, i, j)
+def SolveSudokuMinCandidateFirst(sudo):
+	L = FindAllNone(sudo)
+	if len(L)==0:
+		return True
 	
-	t1 = time.time()
-	SolveSudoku(sudo)
-	t2 = time.time()
-	solveT.append(t2-t1)
+	candidateNumber = []
+	i , j = -1, -1
+	for k in range(0,len(L)):
+		cnL = FindCadidateNumber(sudo, L[k][0] ,L[k][1])
+		# print cnL
+		if len(cnL) == 0:
+			return False
+		
+		if k==0 or len(cnL) < len(candidateNumber):
+			candidateNumber = cnL
+			i, j = L[k]
+	# print i,j 
+	# print candidateNumber
+	for k in candidateNumber:
+		sudo[i][j] = k 
+		# PrintSudoku(sudo)
+		if SolveSudoku(sudo):
+			return True
+		sudo[i][j] = 'x'
 	
-	PrintSudoku(sudo)
-	print IsRightSudo(sudo)
+	return False
 
-print 'gen:(%.4f,%.4f)' % (np.mean(genT),np.std(genT))
-print 'solve:(%.4f,%.4f)' % (np.mean(solveT),np.std(solveT))
+if __name__ == '__main__':
+	genT = []
+	solveT = []
+	for n in range(20):
+		t1 = time.time()
+		sudo = GetRandomSudoku(0.3)
+		t2 = time.time()
+		genT.append(t2-t1)
+		PrintSudoku(sudo)
+		# i,j = FindFirstNone(sudo)
+		# print i,j 
+		# print FindCadidateNumber(sudo, i, j)
+		
+		t1 = time.time()
+		SolveSudokuMinCandidateFirst(sudo)
+		# SolveSudoku(sudo)
+		t2 = time.time()
+		solveT.append(t2-t1)
+		
+		PrintSudoku(sudo)
+		print IsRightSudo(sudo)
+
+	print 'gen:(%.4f,%.4f)' % (np.mean(genT),np.std(genT))
+	print 'solve:(%.4f,%.4f)' % (np.mean(solveT),np.std(solveT))
