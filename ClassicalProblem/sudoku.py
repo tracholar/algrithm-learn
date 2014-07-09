@@ -1,6 +1,7 @@
 # coding:gbk
 import random
 import numpy as np
+import time
 
 def PrintSudoku(M):
 	n = len(M)
@@ -49,4 +50,86 @@ def GetRandomSudoku(hard=0.8):
 	
 	return sudoku
 
-PrintSudoku(GetRandomSudoku(0.5))
+def FindFirstNone(sudo):
+	for i in range(len(sudo)):
+		for j in range(len(sudo)):
+			if sudo[i][j] == 'x':
+				return i,j 
+	return -1,-1
+
+def IsRightSudo(sudo):
+	n = len(sudo)
+	for i in range(n):
+		# PrintSudoku(sudo)
+		for j in range(n):
+			if sudo[i][j]!='x':
+				for k in range(j+1,n):
+					if sudo[i][j] == sudo[i][k]:
+						return False
+			if sudo[j][i] !='x':
+				for k in range(j+1,n):
+					if sudo[j][i] == sudo[k][i]:
+						return False
+	for i in range(n/3):
+		for j in range(n/3):
+			# PrintSudoku(sudo)
+			for k in range(9):
+				if sudo[i*3+k/3][j*3+(k%3)] == 'x':
+					continue
+				for m in range(k+1,9):
+					if sudo[i*3+k/3][j*3+(k%3)] == sudo[i*3+m/3][j*3+(m%3)]:
+						# print i*3+k/3,j*3+(k%3),i*3+m/3,j*3+(m%3)
+						# PrintSudoku(sudo)
+						return False
+				
+	return True	
+	
+def FindCadidateNumber(sudo, i, j):
+	L = []
+	for k in range(1,10):
+		sudo[i][j] = k
+		if IsRightSudo(sudo):
+			L.append(k)
+		sudo[i][j] = 'x'
+	
+	
+	return L
+
+	
+def SolveSudoku(sudo):
+	i,j = FindFirstNone(sudo)
+	if i==-1 and j==-1:
+		return True
+	
+	candidateNumber = FindCadidateNumber(sudo,i ,j)
+	for k in candidateNumber:
+		sudo[i][j] = k 
+		# PrintSudoku(sudo)
+		if SolveSudoku(sudo):
+			return True
+		sudo[i][j] = 'x'
+	
+	return False
+	
+genT = []
+solveT = []
+for n in range(20):
+	t1 = time.time()
+	sudo = GetRandomSudoku(0.4)
+	t2 = time.time()
+	genT.append(t2-t1)
+	PrintSudoku(sudo)
+	i,j = FindFirstNone(sudo)
+	print i,j 
+	print FindCadidateNumber(sudo, i, j)
+	
+	t1 = time.time()
+	SolveSudoku(sudo)
+	t2 = time.time()
+	solveT.append(t2-t1)
+	
+	PrintSudoku(sudo)
+	print IsRightSudo(sudo)
+
+print 'gen:(%.4f,%.4f)' % (np.mean(genT),np.std(genT))
+print 'solve:(%.4f,%.4f)' % (np.mean(solveT),np.std(solveT))
