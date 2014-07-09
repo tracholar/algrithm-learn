@@ -2,6 +2,8 @@
 import random
 import numpy as np
 import time
+import matplotlib.pyplot as plt
+import copy
 
 def PrintSudoku(M):
 	n = len(M)
@@ -147,24 +149,41 @@ def SolveSudokuMinCandidateFirst(sudo):
 if __name__ == '__main__':
 	genT = []
 	solveT = []
+	solveT2 = []
 	for n in range(20):
 		t1 = time.time()
-		sudo = GetRandomSudoku(0.3)
+		sudo = GetRandomSudoku(0.5)
 		t2 = time.time()
 		genT.append(t2-t1)
 		PrintSudoku(sudo)
+		
+		sudo2 = copy.deepcopy(sudo)
+		PrintSudoku(sudo2)
 		# i,j = FindFirstNone(sudo)
 		# print i,j 
 		# print FindCadidateNumber(sudo, i, j)
 		
 		t1 = time.time()
-		SolveSudokuMinCandidateFirst(sudo)
-		# SolveSudoku(sudo)
+		# SolveSudokuMinCandidateFirst(sudo)
+		SolveSudoku(sudo)
 		t2 = time.time()
 		solveT.append(t2-t1)
 		
+		t1 = time.time()
+		SolveSudokuMinCandidateFirst(sudo2)
+		# SolveSudoku(sudo)
+		t2 = time.time()
+		solveT2.append(t2-t1)
+		
 		PrintSudoku(sudo)
-		print IsRightSudo(sudo)
+		print n,IsRightSudo(sudo)
 
 	print 'gen:(%.4f,%.4f)' % (np.mean(genT),np.std(genT))
 	print 'solve:(%.4f,%.4f)' % (np.mean(solveT),np.std(solveT))
+	print 'solveT2:(%.4f,%.4f)' % (np.mean(solveT2),np.std(solveT2))
+	
+	plt.plot(range(20), solveT,'r.-',range(20), solveT2, 'b.-')
+	plt.legend(('SolveSudoku','SolveSudokuMinCandidateFirst'))
+	plt.show()
+	
+
