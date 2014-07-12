@@ -10,7 +10,7 @@ WHITE = 2
 EMPTY = 0
 
 def CreateMap():
-	return np.zeros((N, N))
+	return np.zeros((N, N), dtype=int)
 	
 def PrintMap(map):
 	print ' ', 
@@ -209,6 +209,220 @@ def FindMaxV(map, pos, color):
 	
 	return max(maxV)
 
+def getposstring(map, pos):
+	sh = []
+	sv = []
+	sl = []
+	sr = []
+	
+	
+	i = pos[0]
+	colormap = ['0','1','2']
+	
+	for j in range(N):
+		sh.append(colormap[map[i][j]])
+	
+	j = pos[1]
+	for i in range(N):
+		sv.append(colormap[map[i][j]])
+	
+	delta = pos[0] - pos[1]
+	if delta >0:
+		si = delta
+		endi = N 
+	else:
+		si = 0
+		endi = N + delta
+	
+	all = 0
+	for i in range(si, endi):
+		j = i - delta
+		sl.append(colormap[map[i][j]])
+	
+	sumij = pos[0] + pos[1]
+	if sumij >= N:
+		si = sumij - N + 1
+		endi = N 
+	else:
+		si = 0
+		endi = sumij + 1
+	
+	all = 0
+	for i in range(si, endi):
+		j = sumij - i
+		sr.append(colormap[map[i][j]])
+			
+	return ''.join(sh) , ''.join(sv) , ''.join(sl) , ''.join(sr)		
+	
+def findChanglian(map, pos):
+	ret = 0
+	
+	if map[pos] == 1:
+		P = '11111'
+	elif map[pos] == 2:
+		P = '22222'
+	else:
+		P = '00000'
+	
+	for s in getposstring(map, pos):
+		ret += s.count(P)
+	
+	
+	return ret
+	
+def findHuosi(map, pos):
+	ret = 0
+	
+	if map[pos] == 1:
+		P = '011110'
+	elif map[pos] == 2:
+		P = '022220'
+	else:
+		return 0
+	
+	for s in getposstring(map, pos):
+		ret += s.count(P)
+			
+	return ret 
+	
+def findChongsi(map, pos):
+	ret = 0
+	
+	if map[pos] == 1:
+		Pa = ['011112','211110','0101110','0111010','0110110']
+	elif map[pos] == 2:
+		Pa = ['022221','122220','0202220','0222020','0220220']
+	else:
+		return 0
+	
+	for P in Pa:
+		for s in getposstring(map, pos):
+			ret += s.count(P)
+		
+	return ret 
+	
+def findHuosan(map, pos):
+	ret = 0
+	if map[pos] == 1:
+		Pa = ['01110','010110','011010']
+	elif map[pos] == 2:
+		Pa = ['02220','020220','022020']
+	else:
+		return 0
+	
+	for P in Pa:
+		for s in getposstring(map, pos):
+			ret += s.count(P)
+	return ret 
+	
+def findMiansan(map, pos):
+	ret = 0
+	if map[pos] == 1:
+		Pa = ["001112", "211100", "010112", "211010", "011012", "210110", "10011", "11001", "10101", "2011102"]
+	elif map[pos] == 2:
+		Pa = ["002221", "122200", "020221", "122020", "022021", "120220", "20022", "22002", "20202", "1022201"]
+	else:
+		return 0
+	
+	for P in Pa:
+		for s in getposstring(map, pos):
+			ret += s.count(P)
+	return ret 
+	
+def findHuoer(map, pos):
+	ret = 0
+	if map[pos] == 1:
+		Pa = ["00110", "01100", "01010", "010010"]
+	elif map[pos] == 2:
+		Pa = ["00220", "02200", "02020", "020020"]
+	else:
+		return 0
+	
+	for P in Pa:
+		for s in getposstring(map, pos):
+			ret += s.count(P)
+	return ret 
+	
+def findMianer(map, pos):
+	ret = 0
+	if map[pos] == 1:
+		Pa = ["000112", "211000", "001012", "210100", "100001", "2010102", "2011002", "2001102"]
+	elif map[pos] == 2:
+		Pa = ["000221", "122000", "002021", "120200", "200002", "1020201", "1022001", "1002201"]
+	else:
+		return 0
+	
+	for P in Pa:
+		for s in getposstring(map, pos):
+			ret += s.count(P)
+	return ret 
+	
+def findSisi(map, pos):
+	ret = 0
+	if map[pos] == 1:
+		Pa = ["211112"]
+	elif map[pos] == 2:
+		Pa = ["122221"]
+	else:
+		return 0
+	
+	for P in Pa:
+		for s in getposstring(map, pos):
+			ret += s.count(P)
+	return ret 
+	
+def findSisan(map, pos):
+	ret = 0
+	if map[pos] == 1:
+		Pa = ["21112"]
+	elif map[pos] == 2:
+		Pa = ["12221"]
+	else:
+		return 0
+	
+	for P in Pa:
+		for s in getposstring(map, pos):
+			ret += s.count(P)
+	return ret 
+	
+def findSier(map, pos):
+	ret = 0
+	if map[pos] == 1:
+		Pa = ["2112"]
+	elif map[pos] == 2:
+		Pa = ["1221"]
+	else:
+		return 0
+	
+	for P in Pa:
+		for s in getposstring(map, pos):
+			ret += s.count(P)
+	return ret 
+	
+								
+	
+def heuristicValue(map, pos, color):
+	ret = 0
+	map = copy.copy(map)
+	SetPos(map, pos, color)
+	i = pos[0]
+	j = pos[1]
+	
+	ret += findChanglian(map, pos) * 1000	\
+		+ findHuosi(map, pos) * 800			\
+		+ findChongsi(map, pos) * 100		\
+		+ findHuosan(map, pos) * 90			\
+		+ findMiansan(map, pos) * 50		\
+		+ findHuoer(map, pos) * 30			\
+		+ findMianer(map, pos) * 20			\
+		- findSisi(map, pos) * 10			\
+		- findSisan(map, pos) * 10			\
+		- findSier(map, pos) * 10			\
+		+ min(i, j, N-i-1, N-j-1)
+	
+	return ret 
+	
+	
 def FindMaxPos(map, color):
 	value = np.zeros((N,N))
 	maxV = 0
@@ -216,11 +430,16 @@ def FindMaxPos(map, color):
 	maxj = 0
 	for i in range(N):
 		for j in range(N):
-			value[i][j] = min( i, N-1-i, j, N-1-j) + FindMaxV(map, (i,j), color)
+			if map[i][j] != EMPTY:
+				continue
+			
+			
+			value[i][j] = heuristicValue(map, (i,j), color)
 			if maxV < value[i][j]:
 				maxV = value[i][j]
 				maxi, maxj = i, j 
-	
+	# print value
+	# print maxi, maxj, maxV
 	return maxi, maxj
 			
 			
@@ -244,6 +463,7 @@ if __name__ == '__main__':
 		
 		if SetPos(map,(x-1,y-1),BLACK):
 			PrintMap(map)
+			
 			if IsWin(map)==BLACK:
 				print 'You win!'
 				break
