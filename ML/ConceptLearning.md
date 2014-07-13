@@ -7,7 +7,8 @@
 
 假设空间H中的关系 more general 和 more specific 是一个部分序关系
 ### Find-S 算法
-···
+
+```
 初始化 h 为假设空间H中的最特殊的假设
 for each 训练集中的正例 x
 	for each 属性约束 ai in h
@@ -16,7 +17,7 @@ for each 训练集中的正例 x
 		else
 			将ai替换成x满足的下一个更一般的假设
 输出 h
-···
+```
 
 ### Candidate-Elimination 算法
 
