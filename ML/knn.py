@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from operator import *
 
-def ReadData(fname):
+def ReadIris(fname='iris.data'):
 	feature = []
 	label = []
 	labelMap = {'Iris-setosa':0, 'Iris-versicolor':1, 'Iris-virginica':2}
@@ -14,7 +14,18 @@ def ReadData(fname):
 			continue
 		feature.append([float(x) for x in dataL[0:4]])
 		label.append(labelMap[dataL[4]])
-	return np.array(feature), np.array(label), labelMap
+	return np.array(feature), np.array(label,dtype=int), labelMap
+
+def ReadWine(fname='wine.data'):
+	feature = []
+	label = []
+	for line in open(fname):
+		dataL = line.strip().split(',')
+		if len(dataL)<3:
+			continue
+		feature.append([float(x) for x in dataL[1:]])
+		label.append(dataL[0])
+	return np.array(feature), np.array(label,dtype=int)
 
 def SplitData(X, y, M, k, seed = 0):
 	np.random.seed(seed)
@@ -35,19 +46,22 @@ def cmp(a,b):
 	if a[0] > b[0]:
 		return 1
 	return  -1
-def Classify(x, X, y, k=3):
+	
+def Classify(x, X, y, classN , k=3):
 	dc = []
 	for i in range(len(X)):
 		d = np.sqrt(sum((x - X[i])**2))
 		dc.append([d,y[i]])
 	dc.sort(cmp = cmp)
-	cc = np.zeros(3)
+	cc = np.zeros(classN)
 	i = 0
+	# print cc[1]
 	for d, c in dc:
 		i += 1
 		if i > k:
 			break
 		# print d,c
+		# print cc[int(c)]
 		cc[c] += 1
 	# print min(cc)
 	return np.argmax(cc)
@@ -61,7 +75,9 @@ def Norm(X,mean,std):
 	return normX
 	
 if __name__ == '__main__':
-	X, y, labelmap = ReadData('iris.data')
+	# X, y, labelmap = ReadIris()
+	X, y = ReadWine()
+	y -= 1
 	# print Classify(np.array([7.,3.6,6.1,2.5]), X, y)
 	print 'Data length is %d' % len(y)
 	
@@ -82,12 +98,12 @@ if __name__ == '__main__':
 			# print trainXNorm
 			# print meanX,stdX
 			for i in range(len(testX)):
-				predict = Classify(testX[i],trainX,trainy,K)
+				predict = Classify(testX[i],trainX,trainy,3,K)
 				# print predict,testy[i]
 				if predict==testy[i]:
 					correctRate[k] += 1
 				
-				predict = Classify(testXNorm[i],trainXNorm,trainy,K)
+				predict = Classify(testXNorm[i],trainXNorm,trainy,3,K)
 				if predict==testy[i]:
 					correctRateNorm[k] += 1
 					
@@ -99,7 +115,7 @@ if __name__ == '__main__':
 		r[K-1] = np.mean(correctRate)
 		rnorm[K-1] = np.mean(correctRateNorm)
 	plt.plot(range(1,N+1), r, 'b.-', range(1,N+1), rnorm, 'r.-')
-	plt.title('KNN in different K value with iris data set')
+	plt.title('KNN in different K value with wine data set')
 	plt.xlabel('K')
 	plt.ylabel('correct rate')
 	plt.legend(('Direct KNN', 'Normlized KNN'))
