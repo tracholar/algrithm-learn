@@ -30,39 +30,31 @@ Theta2 = zeros(hidden_layer_number+1,3)-0.5;
 init_theta = [Theta1(:); Theta2(:)];
 lambda = 0.01;
 
-maxIter = [1:4:20 100:100:400];
+maxIter = 1:500;
 trainErrors = zeros(size(maxIter));
 testErrors = zeros(size(maxIter));
 
-for i=1:length(maxIter)
-    iter = maxIter(i);
-    options = optimset('Display','iter','MaxIter',iter,'GradObj','on');
-    [theta, minJ] = fminunc(@(t)(annObj(trainX,trainY,t,lambda)),init_theta,options);
-    Theta1 = reshape(theta(1:5*hidden_layer_number),5,hidden_layer_number);
-    Theta2 = reshape(theta(5*hidden_layer_number+1:length(theta)),hidden_layer_number+1,3);
+theta = init_theta;
 
-    %% train error
-    pred = annPredict(trainX,Theta1,Theta2);
-    ty = zeros(length(pred),1);
-    ty(trainY(:,1)==1) = 1;
-    ty(trainY(:,2)==1) = 2;
-    ty(trainY(:,3)==1) = 3;
-    train_errors = 1 - mean(ty==pred)
-    trainErrors(i) = train_errors;
+options = optimset('MaxIter',500,'GradObj','on','Display','iter');
+[theta, minJ] = fminunc(@(t)(annBPObj(trainX,trainY,t,lambda)),theta,options);
+Theta1 = reshape(theta(1:5*hidden_layer_number),5,hidden_layer_number);
+Theta2 = reshape(theta(5*hidden_layer_number+1:length(theta)),hidden_layer_number+1,3);
 
-    %% test error
-    pred = annPredict(testX,Theta1,Theta2);
-    ty = zeros(length(pred),1);
-    ty(testY(:,1)==1) = 1;
-    ty(testY(:,2)==1) = 2;
-    ty(testY(:,3)==1) = 3;
-    test_errors = 1 - mean(ty==pred)
-    testErrors(i) = test_errors;
-end
+%% train error
+pred = annPredict(trainX,Theta1,Theta2);
+ty = zeros(length(pred),1);
+ty(trainY(:,1)==1) = 1;
+ty(trainY(:,2)==1) = 2;
+ty(trainY(:,3)==1) = 3;
+train_errors = 1 - mean(ty==pred)
 
-figure;
-plot(maxIter,trainErrors,'b.-');
-hold on;
-plot(maxIter,testErrors,'r.-');
-hold off;
-legend('train errors','test errors');
+%% test error
+pred = annPredict(testX,Theta1,Theta2);
+ty = zeros(length(pred),1);
+ty(testY(:,1)==1) = 1;
+ty(testY(:,2)==1) = 2;
+ty(testY(:,3)==1) = 3;
+test_errors = 1 - mean(ty==pred)
+
+
