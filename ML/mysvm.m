@@ -76,3 +76,4 @@ epsilon = theta(end-m+1:end);
 %% train error
 fprintf('%f\n',[w;b]);
 fprintf('train error is %.3f\n', 1-mean(sign(X*w+b)==y));
+
