@@ -1,6 +1,3 @@
-%% close all; clear screen
-close all;
-clc;
 
 %% read data
 
@@ -75,5 +72,9 @@ epsilon = theta(end-m+1:end);
 
 %% train error
 fprintf('%f\n',[w;b]);
-fprintf('train error is %.3f\n', 1-mean(sign(X*w+b)==y));
+pred = sign(X*w+b);
+fprintf('train error is %.3f\n', 1-mean(pred==y));
 
+hold on;
+plot(plot_X(pred==1),plot_Y(pred==1),'ro',plot_X(pred==-1),plot_Y(pred==-1),'ko');
+hold off;
