@@ -20,7 +20,14 @@ y(Y~=1) = -1;
 %% train svm
 % kernel function: linear quadratic polynomial(polyorder)  rbf(rbf_sigma)
 % mlp 
-svmStruct = svmtrain(X, y,'kernel_function', 'rbf', 'rbf_sigma',.75 );
+svmStruct = svmtrain(X, y,'kernel_function', 'linear' );
 group = svmclassify(svmStruct, X);
 fprintf('train error is %f\n', 1-mean(group==y));
+
+%% my train svm
+
+mysvmStruct = mysvmtrain(X, y, 1);
+mygroup = mysvmclassify(mysvmStruct, X);
+fprintf('train error is %f\n', 1-mean(mygroup==y));
+
 
