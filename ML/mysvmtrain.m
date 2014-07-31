@@ -46,7 +46,12 @@ function svmStruct = mysvmtrain(X, Y, C)
                     continue;
                 end
                 
-                eta = X(i)' * X(i) + X(j)' * X(j) - 2 * X(i)' * X(j);
+                Kii = X(i,:) * X(i,:)';
+                Kjj = X(j,:) * X(j,:)';
+                Kij = X(i,:) * X(j,:)';
+                
+                
+                eta = Kii + Kjj - 2* Kij;
                 newaj = aj + Y(j) * (ei - ej) / eta;
                 
                 if newaj > H
@@ -65,9 +70,7 @@ function svmStruct = mysvmtrain(X, Y, C)
                 
                 
                 % update b
-                Kii = X(i)' * X(i);
-                Kjj = X(j)' * X(j);
-                Kij = X(i)' * X(j);
+                
                 
                 bi = -ei + b - Y(i) * Kii * (newai - ai) - Y(j) * Kij * (newaj - aj);
                 bj = -ej + b - Y(j) * Kjj * (newaj - aj) - Y(i) * Kij * (newai - ai);
@@ -77,7 +80,7 @@ function svmStruct = mysvmtrain(X, Y, C)
                     b = bi;
                 end
                 if newaj > 0 && newaj < C
-                    b = bi;
+                    b = bj;
                 end
                 
                 alphaChanged = alphaChanged + 1;
@@ -85,7 +88,8 @@ function svmStruct = mysvmtrain(X, Y, C)
             end
         end
         
-        % fprintf('iter%d: %f\n',iter,b);
+%         fprintf('alpha\n');
+%         fprintf('%f\n',alpha);
         iter = iter + 1;
         
         if alphaChanged == 0
