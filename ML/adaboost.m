@@ -26,3 +26,25 @@ y(Y~=1) = -1;
 %% boost
 D = ones(m, 1) / m;
 [bestStump, minError, bestClass] = buildStump(X, y, D);
+
+% weekClass = struct('bestStump',{},'minError',{}, 'bestClass',{},'alpha',{});
+clear weekClass;
+aggClass = zeros(m,1);
+for i = 1:14000
+    [bestStump, minError, bestClass] = buildStump(X, y, D);
+    alpha = 0.5 * log10((1 - minError) / max(minError, 1e-6));
+    bestStump.alpha = alpha;
+    weekClass(i) = struct(bestStump);
+    expon = -1 * alpha * y .* bestClass;
+    D = D .* exp(expon);
+    D = D / sum(D);
+    
+    aggClass = aggClass + alpha * bestClass;
+    errorRate = 1 - mean(sign(aggClass) == y);
+    if errorRate < 1e-4
+        break;
+    end
+    
+end
+
+errorRate
